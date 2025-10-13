@@ -1,0 +1,4 @@
+invoice_id,customer,amount,status,issued_on
+INV-1001,Acme Corp,1250.00,paid,2024-01-05
+INV-1002,Trailside Outfitters,980.00,sent,2024-01-12
+INV-1003,Northern Goods,1425.00,overdue,2023-12-18
