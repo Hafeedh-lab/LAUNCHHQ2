@@ -1,0 +1,105 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Submission {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  industry       String
+  teamSize       String
+  revenueBand    String
+  province       String
+  bilingualQC    Boolean  @default(false)
+  currentTools   Json
+  topPains       Json
+  csvUploaded    Boolean  @default(false)
+  csvFileId      String?
+  csvSummary     Json?
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  recommendation Json
+  pdfUrl         String?
+  pdfGeneratedAt DateTime?
+  lead           Lead?
+  events         SubmissionEvent[]
+
+  @@index([createdAt])
+  @@index([industry])
+  @@index([province])
+}
+
+model Lead {
+  id               String   @id @default(cuid())
+  submissionId     String   @unique
+  submission       Submission @relation(fields: [submissionId], references: [id])
+  email            String
+  company          String
+  name             String?
+  consent          Boolean
+  consentTimestamp DateTime
+  overallScore     Int
+  scoreBreakdown   Json
+  segment          String
+  crmId            String?
+  crmProvider      String?
+  owner            String?
+  bookingUrl       String?
+  bookingCompleted Boolean  @default(false)
+  bookingCompletedAt DateTime?
+  emailSequence    Json
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([email])
+  @@index([segment])
+  @@index([overallScore])
+  @@index([createdAt])
+}
+
+model SubmissionEvent {
+  id           String     @id @default(cuid())
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id])
+  type         String
+  timestamp    DateTime   @default(now())
+  metadata     Json?
+
+  @@index([submissionId])
+  @@index([type])
+  @@index([timestamp])
+}
+
+model ContentBlock {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  type      String
+  content   String   @db.Text
+  version   Int      @default(1)
+  updatedBy String
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model CSVFile {
+  id           String   @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  scanStatus   String   @default("pending")
+  summary      Json?
+  uploadedAt   DateTime @default(now())
+  expiresAt    DateTime
+
+  @@index([uploadedAt])
+  @@index([expiresAt])
+}
