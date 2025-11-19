@@ -18,12 +18,25 @@ export const wizardSchema = z.object({
   revenueBand: z.enum(['<250k', '250k-1m', '1m-5m', '>5m']),
   province: z.enum(['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT']),
   bilingualQC: z.boolean().default(false),
-  currentTools: z.object(
-    toolCategories.reduce((acc, category) => {
-      acc[category] = z.array(z.string()).default([])
-      return acc
-    }, {} as Record<ToolCategory, z.ZodTypeAny>)
-  ),
+  currentTools: z.object({
+    accounting: z.array(z.string()).default([]),
+    payroll: z.array(z.string()).default([]),
+    pos_ecom: z.array(z.string()).default([]),
+    crm: z.array(z.string()).default([]),
+    inventory: z.array(z.string()).default([]),
+    payments: z.array(z.string()).default([]),
+    collaboration: z.array(z.string()).default([]),
+    automation: z.array(z.string()).default([]),
+  }).default({
+    accounting: [],
+    payroll: [],
+    pos_ecom: [],
+    crm: [],
+    inventory: [],
+    payments: [],
+    collaboration: [],
+    automation: [],
+  }),
   topPains: z.array(z.enum([
     'receipt_chaos',
     'slow_invoicing',
